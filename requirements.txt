@@ -1,0 +1,13 @@
+# ==========================================
+# REQUIREMENTS CHO MÔI TRƯỜNG TEST ĐỘC LẬP (PYTHON TEST)
+# Lưu ý: Không ảnh hưởng đến Engine Ren'Py
+# ==========================================
+
+# Thư viện dùng để viết Unit Test tự động cho các hàm tính điểm Thuyết phục
+pytest==8.1.1
+
+# Thư viện để format code Python cho đẹp và chuẩn PEP8 (Hỗ trợ làm việc nhóm)
+black==24.3.0
+
+# (Tùy chọn) Thư viện hỗ trợ theo dõi tiến trình nếu sau này bạn chạy test hàng nghìn file JSON
+tqdm==4.66.2
