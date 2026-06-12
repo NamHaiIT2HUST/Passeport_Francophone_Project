@@ -13,7 +13,7 @@ export default class PreloaderScene extends Phaser.Scene {
     const barX = 320;
     const barY = 360;
 
-    this.add.text(640, 300, 'Chargement...', {
+    this.add.text(640, 300, 'Chargement des ressources...', {
       fontFamily: 'Arial, sans-serif',
       fontSize: '32px',
       color: '#ffffff'
@@ -31,10 +31,25 @@ export default class PreloaderScene extends Phaser.Scene {
       loadingFill.fillRoundedRect(barX + 4, barY + 4, (barWidth - 8) * value, barHeight - 8, 6);
     });
 
-    this.load.image('bg', '/assets/background.svg');
-    this.load.image('map_bg', '/assets/map_bg.svg');
-    this.load.image('npc_sprite', '/assets/npc_sprite.svg');
+    // ==========================================
+    // 🖼️ LOAD ẢNH THẬT CHO DEMO Ở ĐÂY
+    // (Lưu ý: Sửa lại đuôi .jpg hoặc .png cho đúng với file trong máy bro)
+    // ==========================================
+    this.load.image('bg_map', '/assets/map_world.jpg');          // Ảnh bản đồ
+    this.load.image('bg_mada', '/assets/bg_mada_forest.jpg');    // Ảnh rừng Madagascar
+    this.load.image('bg_quebec', '/assets/bg_quebec.jpg');       // Ảnh rừng Quebec
+    this.load.image('bg_roundtable', '/assets/bg_roundtable.jpg'); // Ảnh phòng họp
 
+    // 🧍 LOAD NHÂN VẬT (Nên dùng ảnh PNG tách nền)
+    this.load.image('npc_lamtac', '/assets/npc_lamtac.png');
+    this.load.image('npc_mayor', '/assets/npc_mayor.png');
+    
+    // (Mấy cái svg cũ tôi comment lại, bro chưa có ảnh thì mở ra xài tạm)
+    // this.load.image('bg', '/assets/background.svg');
+    // this.load.image('map_bg', '/assets/map_bg.svg');
+    // this.load.image('npc_sprite', '/assets/npc_sprite.svg');
+
+    // 📂 LOAD DỮ LIỆU JSON
     this.load.json('items', '/twine_data/items.json');
     this.load.json('dialogues', '/twine_data/dialogues.json');
     this.load.json('rounds', '/twine_data/rounds.json');
@@ -45,4 +60,3 @@ export default class PreloaderScene extends Phaser.Scene {
     this.scene.start('MainMenuScene');
   }
 }
-

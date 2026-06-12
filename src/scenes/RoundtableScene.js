@@ -96,6 +96,7 @@ export default class RoundtableScene extends Phaser.Scene {
     this.createEvidenceButtons();
     this.createReturnControls();
     this.renderCurrentRound();
+    this.add.image(640, 360, 'bg_roundtable').setDepth(-1);
   }
 
   get currentRound() {

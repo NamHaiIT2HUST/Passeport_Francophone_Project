@@ -6,7 +6,7 @@ export default class MapScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(640, 360, 'map_bg');
+    this.add.image(640, 360, 'bg_map');
 
     this.add
       .text(640, 96, 'CARTE DU MONDE FRANCOPHONE', {

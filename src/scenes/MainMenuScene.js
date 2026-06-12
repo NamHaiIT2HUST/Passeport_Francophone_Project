@@ -40,8 +40,12 @@ export default class MainMenuScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setInteractive({ useHandCursor: true });
 
+    // Hiệu ứng nhấp nháy cho nút bắt đầu
+    this.tweens.add({ targets: startButton, alpha: 0.7, duration: 800, yoyo: true, repeat: -1 });
+
     startButton.on('pointerdown', () => {
-      this.scene.start('MapScene');
+      // 🚀 CHUYỂN SANG MÀN HÌNH INTRO VIDEO THAY VÌ BẢN ĐỒ
+      this.scene.start('IntroScene');
     });
   }
 }

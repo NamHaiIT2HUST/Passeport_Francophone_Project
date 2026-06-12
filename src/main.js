@@ -1,22 +1,24 @@
 import Phaser from 'phaser';
-import PreloaderScene from './scenes/PreloaderScene.js';
-import MainMenuScene from './scenes/MainMenuScene.js';
-import MapScene from './scenes/MapScene.js';
-import GameScene from './scenes/GameScene.js';
-import RoundtableScene from './scenes/RoundtableScene.js';
-import ResultScene from './scenes/ResultScene.js';
+import PreloaderScene from './scenes/PreloaderScene';
+import MainMenuScene from './scenes/MainMenuScene';
+import IntroScene from './scenes/IntroScene'; // Thêm dòng này
+import MapScene from './scenes/MapScene';
+import GameScene from './scenes/GameScene';
+import RoundtableScene from './scenes/RoundtableScene';
+import ResultScene from './scenes/ResultScene';
 
 const config = {
   type: Phaser.AUTO,
-  parent: 'game',
   width: 1280,
   height: 720,
-  backgroundColor: '#1d3557',
+  parent: 'game-container',
+  backgroundColor: '#000000',
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [PreloaderScene, MainMenuScene, MapScene, GameScene, RoundtableScene, ResultScene]
+  // Nối IntroScene vào giữa MainMenu và MapScene
+  scene: [PreloaderScene, MainMenuScene, IntroScene, MapScene, GameScene, RoundtableScene, ResultScene]
 };
 
-new Phaser.Game(config);
+export default new Phaser.Game(config);
