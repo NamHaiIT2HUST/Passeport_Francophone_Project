@@ -1,0 +1,23 @@
+{
+  "start": "intro",
+  "passages": [
+    {
+      "id": "intro",
+      "speaker": "Narrateur",
+      "text": "Vous trouvez une preuve importante dans la salle.",
+      "choices": [
+        {
+          "text": "Utiliser la preuve dans la discussion.",
+          "next": "persuasion"
+        }
+      ]
+    },
+    {
+      "id": "persuasion",
+      "speaker": "Interlocuteur",
+      "text": "Cet argument change la conversation.",
+      "choices": []
+    }
+  ]
+}
+
