@@ -4,6 +4,7 @@ import MainMenuScene from './scenes/MainMenuScene';
 import IntroScene from './scenes/IntroScene';
 import MapScene from './scenes/MapScene';
 import GameScene from './scenes/GameScene';
+import QuebecScene from './scenes/QuebecScene';
 
 const config = {
   type: Phaser.AUTO,
@@ -22,7 +23,8 @@ const config = {
     MainMenuScene,
     IntroScene,
     MapScene,
-    GameScene
+    GameScene,
+    QuebecScene
   ]
 };
 

@@ -75,19 +75,21 @@ export default class MapScene extends Phaser.Scene {
       delay: 300
     });
 
-    // Xu ly click vao vung Madagascar
+    // Xu ly click vao vung Madagascar (chuyen sang boi canh Quebec)
     clickZone.on('pointerdown', () => {
       // Zoom vao Madagascar
       this.cameras.main.pan(madaX, madaY, 600);
       this.cameras.main.zoomTo(3, 800);
 
-      // Fade to black va chuyen sang GameScene
+      // Fade to black va chuyen sang GameScene voi levelId 'quebec'
       this.time.delayedCall(800, () => {
         this.cameras.main.fadeOut(600, 0, 0, 0);
 
         this.cameras.main.once('camerafadeoutcomplete', () => {
           this.scene.start('GameScene', {
-            levelId: 'mada'
+            levelId: 'quebec',
+            score: 50,
+            inventory: []
           });
         });
       });
