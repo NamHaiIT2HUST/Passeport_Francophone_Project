@@ -4,10 +4,12 @@ export default class ResultScene extends Phaser.Scene {
   constructor() {
     super('ResultScene');
     this.score = 0;
+    this.levelId = 'mada'; // Thêm biến hứng ID màn chơi
   }
 
   init(data) {
     this.score = data.score ?? 0;
+    this.levelId = data.levelId ?? 'mada';
   }
 
   create() {
@@ -32,7 +34,7 @@ export default class ResultScene extends Phaser.Scene {
         640,
         320,
         hasWon
-          ? `Votre score final est ${this.score}. La forêt est protégée grâce à votre médiation.`
+          ? `Votre score final est ${this.score}. La forêt est protégée.\n\n🛂 Votre passeport a été tamponné !`
           : `Votre score final est ${this.score}. La négociation a échoué, essayez une autre stratégie.`,
         {
           fontFamily: 'Arial, sans-serif',
@@ -46,8 +48,13 @@ export default class ResultScene extends Phaser.Scene {
       )
       .setOrigin(0.5);
 
+    // LƯU TRẠNG THÁI VÀO REGISTRY NẾU THẮNG
+    if (hasWon) {
+        this.registry.set(`${this.levelId}_cleared`, true);
+    }
+
     const replayButton = this.add
-      .text(640, 460, 'Rejouer', {
+      .text(640, 480, '🗺️ Retour à la Carte', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '30px',
         color: '#1d3557',
@@ -61,8 +68,7 @@ export default class ResultScene extends Phaser.Scene {
       .setInteractive({ useHandCursor: true });
 
     replayButton.on('pointerdown', () => {
-      this.scene.start('MainMenuScene');
+      this.scene.start('MapScene'); // Trỏ về MapScene thay vì MainMenu
     });
   }
 }
-
