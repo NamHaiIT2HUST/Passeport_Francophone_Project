@@ -60,87 +60,85 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // ============================================
-    // GIAI DOAN 2: TUONG TAC VOI NPC (sau 12s)
+    // GIAI DOAN 2: CHUYEN CANH SANG VAN PHONG VA TUONG TAC VOI NPC (sau 12s)
     // ============================================
 
-    // Sau 12 giay, hien NPC va cho phep tuong tac
+    // Sau 12 giay, chuyen canh sang van phong va hien NPC
     this.time.delayedCall(12000, () => {
-      // Dat NPC o vi tri xa ben phai - se duoc phat hien khi camera pan
-      const npcX = boundsWidth - 300; // Gan cuoi bounds
-      const npcY = 420;
-      const npc = this.add.image(npcX, npcY, 'npc_quebec_resident');
+      // Fade out de chuyen canh
+      this.cameras.main.fadeOut(500, 0, 0, 0);
 
-      // Auto-scale NPC
-      if (npc.height > 0) {
-        npc.setScale(400 / npc.height);
-      }
-      npc.setDepth(1);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        // Xoa background rung cu
+        bgQuebec.destroy();
 
-      // Tween nhe nhang (tho)
-      this.tweens.add({
-        targets: npc,
-        y: npcY - 10,
-        duration: 2000,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut'
-      });
+        // Load background van phong moi (bg_add)
+        const bgOffice = this.add.image(640, 360, 'bg_add');
+        bgOffice.setDisplaySize(1280, 720);
+        bgOffice.setDepth(0);
 
-      // Pan camera den vi tri co NPC
-      this.cameras.main.pan(npcX, npcY, 1500, 'Power2');
-      this.cameras.main.zoomTo(1.1, 1500, 'Power2');
+        // Dat NPC o giua man hinh
+        const npcX = 640;
+        const npcY = 380;
+        const npc = this.add.image(npcX, npcY, 'npc_quebec_resident');
 
-      // Sau khi pan xong, cho phep click vao NPC
-      this.time.delayedCall(1500, () => {
-        // Bat tinh nang tuong tac cho NPC
-        npc.setInteractive({ useHandCursor: true });
+        // Auto-scale NPC
+        if (npc.height > 0) {
+          npc.setScale(400 / npc.height);
+        }
+        npc.setDepth(1);
 
-        // Chi cho phep click mot lan
-        let hasClicked = false;
+        // Tween nhe nhang (tho)
+        this.tweens.add({
+          targets: npc,
+          y: npcY - 10,
+          duration: 2000,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut'
+        });
 
-        npc.on('pointerdown', () => {
-          if (hasClicked) return; // Ngan khong cho click nhieu lan
-          hasClicked = true;
+        // Fade in de hien canh moi
+        this.cameras.main.fadeIn(500, 0, 0, 0);
 
-          // Tat tieng footstep
-          if (this.footstep) {
-            this.footstep.stop();
-          }
+        // Reset camera bounds va zoom
+        this.cameras.main.setBounds(0, 0, 1280, 720);
+        this.cameras.main.zoomTo(1, 500);
 
-          // Phat am thanh click_ui
-          try {
-            this.sound.play('click_ui');
-          } catch (e) {
-            console.warn('Audio missing - click_ui');
-          }
+        // Sau khi fade in xong, cho phep click vao NPC
+        this.time.delayedCall(500, () => {
+          // Bat tinh nang tuong tac cho NPC
+          npc.setInteractive({ useHandCursor: true });
 
-          // Tat tween tho cua NPC
-          this.tweens.killTweensOf(npc);
+          // Chi cho phep click mot lan
+          let hasClicked = false;
 
-          // Hien vong tron tieu diem (Target Ring) bang graphics
-          const targetRing = this.add.graphics();
-          targetRing.lineStyle(4, 0xf4d35e, 1);
-          targetRing.strokeCircle(npcX, npcY, 50);
-          targetRing.setDepth(10);
+          npc.on('pointerdown', () => {
+            if (hasClicked) return; // Ngan khong cho click nhieu lan
+            hasClicked = true;
 
-          // Animation: Target ring nhap nhay phat sang
-          this.tweens.add({
-            targets: targetRing,
-            alpha: 0.3,
-            scaleX: 1.5,
-            scaleY: 1.5,
-            duration: 800,
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut'
-          });
+            // Tat tieng footstep
+            if (this.footstep) {
+              this.footstep.stop();
+            }
 
-          // Zoom them vao NPC
-          this.cameras.main.zoomTo(1.3, 800, 'Power2');
+            // Phat am thanh click_ui
+            try {
+              this.sound.play('click_ui');
+            } catch (e) {
+              console.warn('Audio missing - click_ui');
+            }
 
-          // Sau 1300ms -> hien Dialogue Box
-          this.time.delayedCall(1300, () => {
-            this.showQuebecDialogueBox();
+            // Tat tween tho cua NPC
+            this.tweens.killTweensOf(npc);
+
+            // Zoom nhe vao NPC (KHONG co target ring)
+            this.cameras.main.zoomTo(1.2, 800, 'Power2');
+
+            // Sau 1300ms -> hien Dialogue Box
+            this.time.delayedCall(1300, () => {
+              this.showQuebecDialogueBox();
+            });
           });
         });
       });

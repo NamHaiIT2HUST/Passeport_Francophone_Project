@@ -34,6 +34,11 @@ export default class PreloaderScene extends Phaser.Scene {
       'assets/bg_quebec.jpg'
     );
 
+    this.load.image(
+      'bg_add',
+      'assets/bg_add.png'
+    );
+
     // CHARACTERS
 
     this.load.image(
