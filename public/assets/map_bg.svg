@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="World map placeholder">
-  <rect width="1280" height="720" fill="#1d3557"/>
-  <path d="M140 190 C250 130 390 170 480 240 C560 310 700 270 790 210 C880 150 1030 170 1130 260 C1040 360 900 390 760 350 C610 308 480 390 350 360 C230 335 160 285 140 190Z" fill="#a8dadc" opacity="0.9"/>
-  <path d="M220 500 C330 440 520 460 620 540 C720 620 930 570 1060 500 C980 650 720 690 540 630 C390 580 270 610 220 500Z" fill="#457b9d" opacity="0.95"/>
-  <circle cx="770" cy="510" r="16" fill="#f4d35e"/>
-  <circle cx="420" cy="260" r="16" fill="#f4d35e"/>
-</svg>
-
