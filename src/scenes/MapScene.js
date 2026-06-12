@@ -24,14 +24,19 @@ export default class MapScene extends Phaser.Scene {
     
     // Check xem Madagascar đã phá đảo chưa
     if (this.registry.get('mada_cleared')) {
-        this.add.text(300, 340, '✅ TAMPONNÉ', {
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '24px',
-            color: '#8fd694',
-            fontStyle: 'bold',
-            backgroundColor: '#000000aa',
-            padding: { x: 10, y: 5 }
+        let madaStamp = this.add.text(300, 340, '✅ TAMPONNÉ', {
+            fontFamily: 'Arial, sans-serif', fontSize: '24px', color: '#8fd694', fontStyle: 'bold', backgroundColor: '#000000aa', padding: { x: 10, y: 5 }
         }).setOrigin(0.5);
+        
+        // Nếu chưa đóng dấu bao giờ thì chạy hiệu ứng "Giáng búa"
+        if (!this.registry.get('mada_stamp_anim_done')) {
+            madaStamp.setScale(4).setAlpha(0); // Bắt đầu to đùng và tàng hình
+            this.tweens.add({
+                targets: madaStamp,
+                scale: 1, alpha: 1, duration: 400, ease: 'Bounce.easeOut' // Rơi xuống nảy lên
+            });
+            this.registry.set('mada_stamp_anim_done', true); // Đánh dấu là đã xem animation
+        }
     }
 
     // Vẽ nút Quebec
@@ -39,16 +44,21 @@ export default class MapScene extends Phaser.Scene {
     
     // Check xem Quebec đã phá đảo chưa
     if (this.registry.get('quebec_cleared')) {
-        this.add.text(820, 500, '✅ TAMPONNÉ', {
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '24px',
-            color: '#8fd694',
-            fontStyle: 'bold',
-            backgroundColor: '#000000aa',
-            padding: { x: 10, y: 5 }
+        let quebecStamp = this.add.text(820, 500, '✅ TAMPONNÉ', {
+            fontFamily: 'Arial, sans-serif', fontSize: '24px', color: '#8fd694', fontStyle: 'bold', backgroundColor: '#000000aa', padding: { x: 10, y: 5 }
         }).setOrigin(0.5);
+
+        // Hiệu ứng giáng búa cho Quebec
+        if (!this.registry.get('quebec_stamp_anim_done')) {
+            quebecStamp.setScale(4).setAlpha(0);
+            this.tweens.add({
+                targets: quebecStamp,
+                scale: 1, alpha: 1, duration: 400, ease: 'Bounce.easeOut'
+            });
+            this.registry.set('quebec_stamp_anim_done', true);
+        }
     }
-  }
+  } // <--- CHÍNH LÀ CÁI NGOẶC NÀY BỊ THIẾU NÈ!
 
   createMissionButton(x, y, label, levelId) {
     const button = this.add
