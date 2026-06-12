@@ -1,43 +1,27 @@
-# ==========================================
-# 1. PYTHON & VIRTUAL ENVIRONMENT
-# ==========================================
-# Bỏ qua thư mục môi trường ảo
+# --- Môi trường Python & Venv ---
 venv/
 env/
-.env
-
-# Bỏ qua các file biên dịch tự động của Python
 __pycache__/
 *.py[cod]
-*$py.class
 
-# ==========================================
-# 2. REN'PY ENGINE SPECIFIC
-# ==========================================
-# Bỏ qua các file kịch bản đã được Ren'Py biên dịch (Ren'Py sẽ tự tạo lại khi chạy)
+# --- Ren'Py Engine & Cache ---
+# Ren'Py tự tạo ra các file .rpyc, .rpymc khi chạy game, không cần đẩy lên Git
 game/**/*.rpyc
 game/**/*.rpymc
 game/**/*.rpyb
 game/**/*.rpyo
 
-# Bỏ qua file save game của người chơi test và log lỗi cục bộ
+# --- Thư mục lưu game và log ---
 game/saves/
 log.txt
 errors.txt
 traceback.txt
 temp/
-tmp/
 
-# Bỏ qua các bản build xuất xưởng (tránh làm nặng repo Git)
-# Chỉ giữ lại thư mục rỗng, chặn các file nén
-builds/**/*.zip
-builds/**/*.tar.bz2
-builds/**/*.exe
-builds/**/*.app/
-builds/**/*.apk
-
-# ==========================================
-# 3. OS & SYSTEM FILES
-# ==========================================
+# --- File hệ thống & OS ---
 .DS_Store
 Thumbs.db
+
+# --- Bản build (nếu bạn export ra) ---
+builds/
+dist/
