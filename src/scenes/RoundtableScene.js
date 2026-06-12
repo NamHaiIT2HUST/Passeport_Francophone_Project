@@ -6,10 +6,13 @@ export default class RoundtableScene extends Phaser.Scene {
     this.levelId = 'mada';
     this.persuasionScore = 0;
     this.inventory = [];
-    this.roundData = null;
+    this.rounds = [];
+    this.currentRoundIndex = 0;
     this.scoreText = null;
+    this.roundCounterText = null;
     this.npcText = null;
     this.resultText = null;
+    this.nextRoundButton = null;
     this.finishButton = null;
     this.evidenceButtons = [];
     this.roundResolved = false;
@@ -18,16 +21,18 @@ export default class RoundtableScene extends Phaser.Scene {
   init(data) {
     this.levelId = data.levelId ?? 'mada';
     this.persuasionScore = data.score ?? 50;
-    this.inventory = data.inventory ?? [];
-    this.roundData = null;
+    this.inventory = data.inventory ? [...data.inventory] : [];
+    this.rounds = [];
+    this.currentRoundIndex = 0;
     this.roundResolved = false;
+    this.nextRoundButton = null;
     this.finishButton = null;
     this.evidenceButtons = [];
   }
 
   create() {
     const roundsData = this.cache.json.get('rounds') ?? {};
-    this.roundData = roundsData[`${this.levelId}_round_1`] ?? Object.values(roundsData)[0];
+    this.rounds = roundsData[this.levelId] ?? [];
 
     this.cameras.main.setBackgroundColor('#22313f');
 
@@ -50,8 +55,16 @@ export default class RoundtableScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    this.roundCounterText = this.add
+      .text(640, 142, '', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '22px',
+        color: '#dddddd'
+      })
+      .setOrigin(0.5);
+
     this.npcText = this.add
-      .text(640, 260, this.roundData?.npc_text ?? 'Aucun débat disponible.', {
+      .text(640, 260, '', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '38px',
         color: '#ffffff',
@@ -82,6 +95,30 @@ export default class RoundtableScene extends Phaser.Scene {
 
     this.createEvidenceButtons();
     this.createReturnControls();
+    this.renderCurrentRound();
+  }
+
+  get currentRound() {
+    return this.rounds[this.currentRoundIndex];
+  }
+
+  renderCurrentRound() {
+    this.roundResolved = false;
+    this.resultText.setText('');
+    this.nextRoundButton.setVisible(false);
+    this.finishButton.setVisible(false);
+
+    if (!this.currentRound) {
+      this.npcText.setText('Aucun débat disponible.');
+      this.evidenceButtons.forEach((button) => button.disableInteractive());
+      this.finishButton.setVisible(true);
+      return;
+    }
+
+    this.roundCounterText.setText(`Round ${this.currentRoundIndex + 1} / ${this.rounds.length}`);
+    this.npcText.setVisible(true);
+    this.npcText.setText(this.currentRound.npc_text);
+    this.evidenceButtons.forEach((button) => button.setInteractive({ useHandCursor: true }));
   }
 
   createEvidenceButtons() {
@@ -151,6 +188,26 @@ export default class RoundtableScene extends Phaser.Scene {
       });
     });
 
+    this.nextRoundButton = this.add
+      .text(640, 668, 'Round Suivant', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '24px',
+        color: '#1d3557',
+        backgroundColor: '#f4d35e',
+        padding: {
+          x: 18,
+          y: 12
+        }
+      })
+      .setOrigin(0.5)
+      .setVisible(false)
+      .setInteractive({ useHandCursor: true });
+
+    this.nextRoundButton.on('pointerdown', () => {
+      this.currentRoundIndex += 1;
+      this.renderCurrentRound();
+    });
+
     this.finishButton = this.add
       .text(640, 668, 'Terminer la négociation', {
         fontFamily: 'Arial, sans-serif',
@@ -168,29 +225,36 @@ export default class RoundtableScene extends Phaser.Scene {
 
     this.finishButton.on('pointerdown', () => {
       this.scene.start('ResultScene', {
+        levelId: this.levelId,
         score: this.persuasionScore
       });
     });
   }
 
   handleEvidenceChoice(item) {
-    if (this.roundResolved || !this.roundData) {
+    if (this.roundResolved || !this.currentRound) {
       return;
     }
 
-    if (item.id === this.roundData.correct_item) {
-      this.roundResolved = true;
+    this.roundResolved = true;
+    this.evidenceButtons.forEach((button) => button.disableInteractive());
+
+    if (item.id === this.currentRound.correct_item) {
       this.npcText.setVisible(false);
-      this.resultText.setText(this.roundData.win_text);
-      this.persuasionScore += this.roundData.score_change ?? 20;
-      this.evidenceButtons.forEach((button) => button.disableInteractive());
+      this.resultText.setText(this.currentRound.win_text);
+      this.persuasionScore += this.currentRound.score_change ?? 20;
     } else {
-      this.resultText.setText(this.roundData.lose_text);
+      this.resultText.setText(this.currentRound.lose_text);
       this.persuasionScore -= 10;
     }
 
     this.scoreText.setText(`Persuasion Score: ${this.persuasionScore}`);
-    this.finishButton.setVisible(true);
+
+    if (this.currentRoundIndex < this.rounds.length - 1) {
+      this.nextRoundButton.setVisible(true);
+    } else {
+      this.finishButton.setVisible(true);
+    }
   }
 }
 

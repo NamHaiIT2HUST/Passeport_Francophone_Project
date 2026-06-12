@@ -6,10 +6,22 @@
     "desc": "Preuve vidéo d'abattage illégal."
   },
   {
+    "id": "item_mada_2",
+    "level": "mada",
+    "name": "Carte des zones protégées",
+    "desc": "Carte officielle montrant les zones interdites à la coupe."
+  },
+  {
     "id": "item_quebec_1",
     "level": "quebec",
     "name": "Rapport toxique",
     "desc": "Rapport sur la pollution d'eau."
+  },
+  {
+    "id": "item_quebec_2",
+    "level": "quebec",
+    "name": "Analyse de laboratoire",
+    "desc": "Résultats prouvant une contamination chimique."
   }
 ]
 

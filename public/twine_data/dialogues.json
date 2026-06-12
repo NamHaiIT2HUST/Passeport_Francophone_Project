@@ -4,10 +4,20 @@
     "text": "Le déboisement illégal détruit notre maison !",
     "gives_item": "item_mada_1"
   },
+  "mada_npc_2": {
+    "speaker": "Garde forestier",
+    "text": "Cette carte montre les zones protégées de la forêt.",
+    "gives_item": "item_mada_2"
+  },
   "quebec_npc_1": {
     "speaker": "Riverain",
     "text": "La pollution menace notre rivière.",
     "gives_item": "item_quebec_1"
+  },
+  "quebec_npc_2": {
+    "speaker": "Scientifique",
+    "text": "L'analyse de laboratoire confirme la contamination.",
+    "gives_item": "item_quebec_2"
   }
 }
 
