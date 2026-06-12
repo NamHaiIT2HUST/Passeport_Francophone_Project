@@ -6,54 +6,42 @@ export default class PreloaderScene extends Phaser.Scene {
   }
 
   preload() {
-    this.cameras.main.setBackgroundColor('#1d3557');
 
-    const barWidth = 640;
-    const barHeight = 28;
-    const barX = 320;
-    const barY = 360;
+    this.add.text(
+      640,
+      360,
+      'Chargement...',
+      {
+        fontSize: '32px',
+        color: '#ffffff'
+      }
+    ).setOrigin(0.5);
 
-    this.add.text(640, 300, 'Chargement des ressources...', {
-      fontFamily: 'Arial, sans-serif',
-      fontSize: '32px',
-      color: '#ffffff'
-    }).setOrigin(0.5);
+    // BACKGROUNDS
 
-    const loadingBorder = this.add.graphics();
-    loadingBorder.lineStyle(3, 0xffffff, 0.8);
-    loadingBorder.strokeRoundedRect(barX, barY, barWidth, barHeight, 8);
+    this.load.image(
+      'bg_office',
+      'assets/bg_office.png'
+    );
 
-    const loadingFill = this.add.graphics();
+    this.load.image(
+      'bg_map',
+      'assets/bg_map.png'
+    );
 
-    this.load.on('progress', (value) => {
-      loadingFill.clear();
-      loadingFill.fillStyle(0xf4d35e, 1);
-      loadingFill.fillRoundedRect(barX + 4, barY + 4, (barWidth - 8) * value, barHeight - 8, 6);
-    });
+    // CHARACTERS
 
-    // ==========================================
-    // 🖼️ LOAD ẢNH THẬT CHO DEMO Ở ĐÂY
-    // (Lưu ý: Sửa lại đuôi .jpg hoặc .png cho đúng với file trong máy bro)
-    // ==========================================
-    this.load.image('bg_map', '/assets/map_world.jpg');          // Ảnh bản đồ
-    this.load.image('bg_mada', '/assets/bg_mada_forest.jpg');    // Ảnh rừng Madagascar
-    this.load.image('bg_quebec', '/assets/bg_quebec.jpg');       // Ảnh rừng Quebec
-    this.load.image('bg_roundtable', '/assets/bg_roundtable.jpg'); // Ảnh phòng họp
+    this.load.image(
+      'npc_manager',
+      'assets/npc_manager.png'
+    );
 
-    // 🧍 LOAD NHÂN VẬT (Nên dùng ảnh PNG tách nền)
-    this.load.image('npc_lamtac', '/assets/npc_lamtac.png');
-    this.load.image('npc_mayor', '/assets/npc_mayor.png');
-    
-    // (Mấy cái svg cũ tôi comment lại, bro chưa có ảnh thì mở ra xài tạm)
-    // this.load.image('bg', '/assets/background.svg');
-    // this.load.image('map_bg', '/assets/map_bg.svg');
-    // this.load.image('npc_sprite', '/assets/npc_sprite.svg');
+    // AUDIO
 
-    // 📂 LOAD DỮ LIỆU JSON
-    this.load.json('items', '/twine_data/items.json');
-    this.load.json('dialogues', '/twine_data/dialogues.json');
-    this.load.json('rounds', '/twine_data/rounds.json');
-    this.load.json('vocab', '/twine_data/vocab.json');
+    this.load.audio(
+      'intro_voice',
+      'assets/intro_voice.mp3'
+    );
   }
 
   create() {

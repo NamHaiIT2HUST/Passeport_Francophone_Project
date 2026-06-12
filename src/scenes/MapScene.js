@@ -1,48 +1,130 @@
 import Phaser from 'phaser';
 
 export default class MapScene extends Phaser.Scene {
+
   constructor() {
     super('MapScene');
   }
 
   create() {
-    // Hiện ảnh Bản đồ báo động (Vừa khít màn hình 1280x720)
-    this.add.image(640, 360, 'bg_map').setDisplaySize(1280, 720);
+    // ============================================
+    // PHAN CANH 3: MO BAN DO PHAP NGU (18s - 25s)
+    // ============================================
 
-    // Chữ hướng dẫn trên cùng
-    this.add.text(640, 50, 'ALERTE MAXIMALE : Sélectionnez cette zone', {
-      fontFamily: 'Arial, sans-serif', fontSize: '32px', color: '#ffffff',
-      backgroundColor: '#cc0000', padding: { x: 20, y: 10 }
-    }).setOrigin(0.5);
+    // Background - Ban do the gioi
+    const bgMap = this.add.image(640, 360, 'bg_map');
+    this.fitImageToScreen(bgMap);
+    bgMap.setDepth(0);
 
-    // TỌA ĐỘ MADAGASCAR TRÊN BẢN ĐỒ (Có thể sửa số x, y nếu nó lệch)
-    const madaX = 850; 
+    // Vi tri Madagascar tren ban do (theo toa do yeu cau)
+    const madaX = 850;
     const madaY = 480;
 
-    // Phân cảnh 3 (15-20s): Vòng tròn đỏ nhấp nháy báo động (Pulse Effect)
-    const alertCircle = this.add.circle(madaX, madaY, 30, 0xff0000, 0.6);
+    // Tao vung zone tang hinh (alpha: 0) tai vi tri Madagascar
+    const clickZone = this.add.zone(madaX, madaY, 120, 120)
+      .setInteractive({ useHandCursor: true })
+      .setDepth(1);
+
+    // Hieu ung visual de nguoi choi biet vi tri click
+    // Vong pulse (hieu ung lan truyen)
+    const pulseRing = this.add.circle(madaX, madaY, 30, 0xff0000, 0);
+    pulseRing.setStrokeStyle(3, 0xff4444, 0.8);
+    pulseRing.setDepth(2);
+
     this.tweens.add({
-      targets: alertCircle,
-      scale: 2.5,     // Phình to ra
-      alpha: 0,       // Mờ dần
-      duration: 1000,
-      repeat: -1      // Lặp lại mãi mãi
+      targets: pulseRing,
+      scale: 4,
+      alpha: 0,
+      duration: 1500,
+      repeat: -1,
+      ease: 'Sine.easeOut'
     });
 
-    const madaDot = this.add.circle(madaX, madaY, 15, 0xff0000).setInteractive({ useHandCursor: true });
-    this.add.text(madaX, madaY + 30, 'Madagascar', {
-      fontFamily: 'Arial', fontSize: '20px', color: '#ffffff', backgroundColor: '#000000'
-    }).setOrigin(0.5);
+    // Vung mau do nhe de danh dau (se bien mat khi hover)
+    const marker = this.add.circle(madaX, madaY, 25, 0xff0000, 0.3);
+    marker.setDepth(2);
 
-    // Phân cảnh 4: Click vào Madagascar -> Zoom in và chuyển cảnh vào Rừng
-    madaDot.on('pointerdown', () => {
-      this.cameras.main.pan(madaX, madaY, 1000, 'Power2'); // Camera lia tới
-      this.cameras.main.zoomTo(3, 1000, 'Power2');         // Camera phóng to
+    this.tweens.add({
+      targets: marker,
+      alpha: 0.1,
+      scale: 1.3,
+      duration: 1000,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
 
-      // Đợi 1 giây zoom xong thì bay vào GameScene
-      this.time.delayedCall(1000, () => {
-        this.scene.start('GameScene', { levelId: 'mada' });
+    // Dong chu huong dan
+    const guideText = this.add.text(640, 60, 'Sélectionnez cette zone', {
+      fontFamily: 'Arial',
+      fontSize: '26px',
+      color: '#ffffff',
+      backgroundColor: '#cc0000',
+      padding: { x: 20, y: 10 },
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(3);
+
+    // Animation: Guide text xuat hien
+    guideText.y = -50;
+    this.tweens.add({
+      targets: guideText,
+      y: 60,
+      duration: 600,
+      ease: 'Back.easeOut',
+      delay: 300
+    });
+
+    // Xu ly click vao vung Madagascar
+    clickZone.on('pointerdown', () => {
+      // Zoom vao Madagascar
+      this.cameras.main.pan(madaX, madaY, 600);
+      this.cameras.main.zoomTo(3, 800);
+
+      // Fade to black va chuyen sang GameScene
+      this.time.delayedCall(800, () => {
+        this.cameras.main.fadeOut(600, 0, 0, 0);
+
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+          this.scene.start('GameScene', {
+            levelId: 'mada'
+          });
+        });
       });
     });
+
+    // Hover effect
+    clickZone.on('pointerover', () => {
+      this.tweens.add({
+        targets: marker,
+        scale: 2,
+        alpha: 0.6,
+        duration: 300
+      });
+    });
+
+    clickZone.on('pointerout', () => {
+      this.tweens.add({
+        targets: marker,
+        scale: 1.3,
+        alpha: 0.3,
+        duration: 300
+      });
+    });
+  }
+
+  /**
+   * Helper: Fit image to screen while maintaining aspect ratio (cover mode)
+   */
+  fitImageToScreen(image) {
+    const gameWidth = this.scale.width;
+    const gameHeight = this.scale.height;
+    const imgWidth = image.width;
+    const imgHeight = image.height;
+
+    const scaleX = gameWidth / imgWidth;
+    const scaleY = gameHeight / imgHeight;
+    const scale = Math.max(scaleX, scaleY);
+
+    image.setScale(scale);
   }
 }
