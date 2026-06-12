@@ -116,34 +116,22 @@ OBJECTIFS SPÉCIFIQUES :
         ease: 'Back.easeOut',
         onComplete: () => {
           // Hien nut "Suivant" sau khi to giay truot len xong
-          const nextBtn = this.add.container(640, 620);
+          // Tao rectangle interactive lam nut bam
+          const nextBtnBg = this.add.rectangle(640, 620, 180, 55, 0xf4d35e);
+          nextBtnBg.setStrokeStyle(2, 0xe6c22f);
+          nextBtnBg.setInteractive({ useHandCursor: true });
+          nextBtnBg.setDepth(25);
 
-          const btnBg = this.add.rectangle(0, 0, 180, 55, 0xf4d35e);
-          btnBg.setStrokeStyle(2, 0xe6c22f);
-          btnBg.setInteractive({ useHandCursor: true });
-
-          const btnText = this.add.text(0, 0, 'Suivant ⏭', {
+          const nextBtnText = this.add.text(640, 620, 'Suivant ⏭', {
             fontFamily: 'Arial',
             fontSize: '22px',
             color: '#1a1a2e',
             fontStyle: 'bold'
-          }).setOrigin(0.5);
-
-          nextBtn.add([btnBg, btnText]);
-          nextBtn.setDepth(25);
-          nextBtn.setSize(180, 55);
+          }).setOrigin(0.5).setDepth(26);
 
           // Animation: Nut nhap nhay (alpha tween)
           this.tweens.add({
-            targets: btnBg,
-            alpha: 0.6,
-            duration: 700,
-            yoyo: true,
-            repeat: -1
-          });
-
-          this.tweens.add({
-            targets: btnText,
+            targets: [nextBtnBg, nextBtnText],
             alpha: 0.6,
             duration: 700,
             yoyo: true,
@@ -151,17 +139,19 @@ OBJECTIFS SPÉCIFIQUES :
           });
 
           // Xu ly click vao nut "Suivant"
-          nextBtn.on('pointerdown', () => {
-            // To giay truot di va chuyen canh sang MapScene
+          nextBtnBg.on('pointerdown', () => {
+            console.log('Nut Suivante duoc click!');
+            // Ngung animation nhap nhay
+            this.tweens.killTweensOf([nextBtnBg, nextBtnText]);
+
+            // To giay va nut truot di va chuyen canh sang MapScene
             this.tweens.add({
-              targets: [paperBg, paperContent, nextBtn],
+              targets: [paperBg, paperContent, nextBtnBg, nextBtnText],
               x: 1400,
               duration: 500,
               ease: 'Power2.easeIn',
               onComplete: () => {
-                paperBg.destroy();
-                paperContent.destroy();
-                nextBtn.destroy();
+                console.log('Dang chuyen sang MapScene...');
                 this.scene.start('MapScene');
               }
             });

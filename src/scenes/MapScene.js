@@ -7,6 +7,7 @@ export default class MapScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('MapScene da duoc khoi tao!');
     // ============================================
     // PHAN CANH 3: MO BAN DO PHAP NGU (18s - 25s)
     // ============================================
