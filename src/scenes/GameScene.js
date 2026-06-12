@@ -8,6 +8,9 @@ export default class GameScene extends Phaser.Scene {
     this.dialogueContainer = null;
     this.dialogueText = null;
     this.dialogueOpenedAt = 0;
+    this.inventory = [];
+    this.inventoryContainer = null;
+    this.inventoryItemsContainer = null;
   }
 
   preload() {
@@ -27,6 +30,23 @@ export default class GameScene extends Phaser.Scene {
         x: 12,
         y: 8
       }
+    });
+
+    const inventoryButton = this.add
+      .text(1060, 24, '🎒 Inventaire', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '24px',
+        color: '#ffffff',
+        backgroundColor: '#00000099',
+        padding: {
+          x: 14,
+          y: 10
+        }
+      })
+      .setInteractive({ useHandCursor: true });
+
+    inventoryButton.on('pointerdown', () => {
+      this.openInventory();
     });
 
     const dialogueX = 80;
@@ -77,13 +97,51 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    const evidenceCard = this.add
-      .rectangle(640, 380, 120, 120, 0xf4d35e)
+    const inventoryBackground = this.add.graphics();
+    inventoryBackground.fillStyle(0x000000, 0.88);
+    inventoryBackground.fillRoundedRect(0, 0, 620, 420, 18);
+    inventoryBackground.lineStyle(3, 0xffffff, 0.45);
+    inventoryBackground.strokeRoundedRect(0, 0, 620, 420, 18);
+
+    const inventoryTitle = this.add.text(32, 28, 'Inventaire', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '34px',
+      color: '#ffffff'
+    });
+
+    const closeInventoryButton = this.add
+      .text(532, 28, 'Fermer', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '20px',
+        color: '#ffffff',
+        backgroundColor: '#a33a3a',
+        padding: {
+          x: 12,
+          y: 8
+        }
+      })
+      .setInteractive({ useHandCursor: true });
+
+    closeInventoryButton.on('pointerdown', () => {
+      this.closeInventory();
+    });
+
+    this.inventoryItemsContainer = this.add.container(36, 96);
+    this.inventoryContainer = this.add.container(330, 150, [
+      inventoryBackground,
+      inventoryTitle,
+      closeInventoryButton,
+      this.inventoryItemsContainer
+    ]);
+    this.inventoryContainer.setVisible(false);
+    this.inventoryContainer.setDepth(20);
+
+    const evidenceCard = this.add.rectangle(0, 0, 120, 120, 0xf4d35e)
       .setStrokeStyle(4, 0xffffff)
       .setInteractive({ useHandCursor: true });
 
-    this.add
-      .text(evidenceCard.x, evidenceCard.y, 'Thẻ\nbằng chứng', {
+    const evidenceLabel = this.add
+      .text(0, 0, 'Thẻ\nbằng chứng', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '20px',
         color: '#1d3557',
@@ -91,9 +149,17 @@ export default class GameScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    const evidenceContainer = this.add.container(640, 380, [evidenceCard, evidenceLabel]);
+
     evidenceCard.on('pointerdown', () => {
+      this.inventory.push({
+        id: 'item_1',
+        name: 'Vidéo de bûcherons'
+      });
       this.persuasionScore += 20;
       this.scoreText.setText(`Persuasion Score: ${this.persuasionScore}`);
+      evidenceContainer.setVisible(false);
+      evidenceCard.disableInteractive();
       this.showDialogue('item_found');
       console.log('Đã nhặt bằng chứng & Gọi Twine Dialogue');
     });
@@ -119,6 +185,44 @@ export default class GameScene extends Phaser.Scene {
   hideDialogue() {
     if (this.dialogueContainer) {
       this.dialogueContainer.setVisible(false);
+    }
+  }
+
+  openInventory() {
+    this.inventoryItemsContainer.removeAll(true);
+
+    if (this.inventory.length === 0) {
+      this.inventoryItemsContainer.add(
+        this.add.text(0, 0, 'Aucun objet pour le moment.', {
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '24px',
+          color: '#dddddd',
+          wordWrap: {
+            width: 548
+          }
+        })
+      );
+    }
+
+    this.inventory.forEach((item, index) => {
+      const itemText = this.add.text(0, index * 48, `• ${item.name}`, {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '24px',
+        color: '#ffffff',
+        wordWrap: {
+          width: 548
+        }
+      });
+
+      this.inventoryItemsContainer.add(itemText);
+    });
+
+    this.inventoryContainer.setVisible(true);
+  }
+
+  closeInventory() {
+    if (this.inventoryContainer) {
+      this.inventoryContainer.setVisible(false);
     }
   }
 }
