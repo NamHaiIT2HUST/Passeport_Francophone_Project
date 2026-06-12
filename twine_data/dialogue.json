@@ -1,5 +1,10 @@
 {
   "start": "intro",
+  "item_found": {
+    "speaker": "Narrateur",
+    "text": "Vous avez trouvé une preuve cruciale ! La jauge de persuasion augmente.",
+    "choices": []
+  },
   "passages": [
     {
       "id": "intro",
@@ -20,4 +25,3 @@
     }
   ]
 }
-
