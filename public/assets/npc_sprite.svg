@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="NPC placeholder">
+  <rect width="128" height="128" rx="16" fill="#f4d35e"/>
+  <circle cx="64" cy="42" r="22" fill="#1d3557"/>
+  <path d="M28 112 C34 80 94 80 100 112Z" fill="#1d3557"/>
+</svg>
+

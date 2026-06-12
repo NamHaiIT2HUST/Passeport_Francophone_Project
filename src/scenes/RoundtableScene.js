@@ -1,18 +1,12 @@
 import Phaser from 'phaser';
 
-const ROUND_DATA = {
-  id: 'round_1',
-  npc_text: 'Nous ne coupons que les vieux arbres malades !',
-  correct_item_id: 'item_1',
-  win_text: "D'accord, j'avoue...",
-  lose_text: 'Ça ne prouve rien !'
-};
-
 export default class RoundtableScene extends Phaser.Scene {
   constructor() {
     super('RoundtableScene');
+    this.levelId = 'mada';
     this.persuasionScore = 0;
     this.inventory = [];
+    this.roundData = null;
     this.scoreText = null;
     this.npcText = null;
     this.resultText = null;
@@ -22,14 +16,19 @@ export default class RoundtableScene extends Phaser.Scene {
   }
 
   init(data) {
+    this.levelId = data.levelId ?? 'mada';
     this.persuasionScore = data.score ?? 50;
     this.inventory = data.inventory ?? [];
+    this.roundData = null;
     this.roundResolved = false;
     this.finishButton = null;
     this.evidenceButtons = [];
   }
 
   create() {
+    const roundsData = this.cache.json.get('rounds') ?? {};
+    this.roundData = roundsData[`${this.levelId}_round_1`] ?? Object.values(roundsData)[0];
+
     this.cameras.main.setBackgroundColor('#22313f');
 
     this.scoreText = this.add.text(24, 24, `Persuasion Score: ${this.persuasionScore}`, {
@@ -52,7 +51,7 @@ export default class RoundtableScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.npcText = this.add
-      .text(640, 260, ROUND_DATA.npc_text, {
+      .text(640, 260, this.roundData?.npc_text ?? 'Aucun débat disponible.', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '38px',
         color: '#ffffff',
@@ -137,11 +136,19 @@ export default class RoundtableScene extends Phaser.Scene {
       .setInteractive({ useHandCursor: true });
 
     returnButton.on('pointerdown', () => {
-      this.scene.start('GameScene');
+      this.scene.start('GameScene', {
+        levelId: this.levelId,
+        score: this.persuasionScore,
+        inventory: this.inventory
+      });
     });
 
     this.input.keyboard.on('keydown-ESC', () => {
-      this.scene.start('GameScene');
+      this.scene.start('GameScene', {
+        levelId: this.levelId,
+        score: this.persuasionScore,
+        inventory: this.inventory
+      });
     });
 
     this.finishButton = this.add
@@ -167,18 +174,18 @@ export default class RoundtableScene extends Phaser.Scene {
   }
 
   handleEvidenceChoice(item) {
-    if (this.roundResolved) {
+    if (this.roundResolved || !this.roundData) {
       return;
     }
 
-    if (item.id === ROUND_DATA.correct_item_id) {
+    if (item.id === this.roundData.correct_item) {
       this.roundResolved = true;
       this.npcText.setVisible(false);
-      this.resultText.setText(ROUND_DATA.win_text);
-      this.persuasionScore += 20;
+      this.resultText.setText(this.roundData.win_text);
+      this.persuasionScore += this.roundData.score_change ?? 20;
       this.evidenceButtons.forEach((button) => button.disableInteractive());
     } else {
-      this.resultText.setText(ROUND_DATA.lose_text);
+      this.resultText.setText(this.roundData.lose_text);
       this.persuasionScore -= 10;
     }
 

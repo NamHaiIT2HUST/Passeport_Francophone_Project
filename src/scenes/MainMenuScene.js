@@ -41,8 +41,7 @@ export default class MainMenuScene extends Phaser.Scene {
       .setInteractive({ useHandCursor: true });
 
     startButton.on('pointerdown', () => {
-      this.scene.start('GameScene');
+      this.scene.start('MapScene');
     });
   }
 }
-

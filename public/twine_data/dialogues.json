@@ -1,0 +1,13 @@
+{
+  "mada_npc_1": {
+    "speaker": "Dân làng",
+    "text": "Le déboisement illégal détruit notre maison !",
+    "gives_item": "item_mada_1"
+  },
+  "quebec_npc_1": {
+    "speaker": "Riverain",
+    "text": "La pollution menace notre rivière.",
+    "gives_item": "item_quebec_1"
+  }
+}
+

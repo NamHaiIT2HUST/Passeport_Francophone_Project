@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
+import PreloaderScene from './scenes/PreloaderScene.js';
 import MainMenuScene from './scenes/MainMenuScene.js';
+import MapScene from './scenes/MapScene.js';
 import GameScene from './scenes/GameScene.js';
 import RoundtableScene from './scenes/RoundtableScene.js';
 import ResultScene from './scenes/ResultScene.js';
@@ -14,7 +16,7 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [MainMenuScene, GameScene, RoundtableScene, ResultScene]
+  scene: [PreloaderScene, MainMenuScene, MapScene, GameScene, RoundtableScene, ResultScene]
 };
 
 new Phaser.Game(config);

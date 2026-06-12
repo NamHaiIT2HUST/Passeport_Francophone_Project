@@ -1,0 +1,17 @@
+{
+  "mada_round_1": {
+    "npc_text": "Nous ne coupons que les arbres malades !",
+    "correct_item": "item_mada_1",
+    "win_text": "J'avoue...",
+    "lose_text": "Faux !",
+    "score_change": 20
+  },
+  "quebec_round_1": {
+    "npc_text": "L'eau est parfaitement saine !",
+    "correct_item": "item_quebec_1",
+    "win_text": "Le rapport est clair, nous devons agir.",
+    "lose_text": "Ce document ne concerne pas cette rivière !",
+    "score_change": 20
+  }
+}
+
