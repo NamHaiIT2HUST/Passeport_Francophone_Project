@@ -16,6 +16,7 @@ export default class RoundtableScene extends Phaser.Scene {
     this.scoreText = null;
     this.npcText = null;
     this.resultText = null;
+    this.finishButton = null;
     this.evidenceButtons = [];
     this.roundResolved = false;
   }
@@ -24,6 +25,7 @@ export default class RoundtableScene extends Phaser.Scene {
     this.persuasionScore = data.score ?? 50;
     this.inventory = data.inventory ?? [];
     this.roundResolved = false;
+    this.finishButton = null;
     this.evidenceButtons = [];
   }
 
@@ -141,6 +143,27 @@ export default class RoundtableScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', () => {
       this.scene.start('GameScene');
     });
+
+    this.finishButton = this.add
+      .text(640, 668, 'Terminer la négociation', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '24px',
+        color: '#1d3557',
+        backgroundColor: '#f4d35e',
+        padding: {
+          x: 18,
+          y: 12
+        }
+      })
+      .setOrigin(0.5)
+      .setVisible(false)
+      .setInteractive({ useHandCursor: true });
+
+    this.finishButton.on('pointerdown', () => {
+      this.scene.start('ResultScene', {
+        score: this.persuasionScore
+      });
+    });
   }
 
   handleEvidenceChoice(item) {
@@ -160,6 +183,7 @@ export default class RoundtableScene extends Phaser.Scene {
     }
 
     this.scoreText.setText(`Persuasion Score: ${this.persuasionScore}`);
+    this.finishButton.setVisible(true);
   }
 }
 
