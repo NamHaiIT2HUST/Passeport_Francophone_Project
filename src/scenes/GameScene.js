@@ -49,6 +49,27 @@ export default class GameScene extends Phaser.Scene {
       this.openInventory();
     });
 
+    const roundtableButton = this.add
+      .text(1248, 688, '⚖️ Aller à la Table Ronde', {
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '22px',
+        color: '#ffffff',
+        backgroundColor: '#6b3f1d',
+        padding: {
+          x: 14,
+          y: 10
+        }
+      })
+      .setOrigin(1, 1)
+      .setInteractive({ useHandCursor: true });
+
+    roundtableButton.on('pointerdown', () => {
+      this.scene.start('RoundtableScene', {
+        score: this.persuasionScore,
+        inventory: this.inventory
+      });
+    });
+
     const dialogueX = 80;
     const dialogueY = 520;
     const dialogueWidth = 1120;

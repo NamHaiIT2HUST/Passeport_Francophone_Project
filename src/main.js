@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import GameScene from './scenes/GameScene.js';
+import RoundtableScene from './scenes/RoundtableScene.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -11,8 +12,7 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [GameScene]
+  scene: [GameScene, RoundtableScene]
 };
 
 new Phaser.Game(config);
-
