@@ -80,7 +80,9 @@ export default class IntroScene extends Phaser.Scene {
       // Tao to giay "Plan de travail" - Professional paper styling with larger dimensions
       const paperWidth = 760;
       const paperHeight = 520;
-      const paperBg = this.add.rectangle(260 + paperWidth / 2, 750, paperWidth, paperHeight, 0xFAFAFA);
+      const paperStartX = 260 + paperWidth / 2; // 640
+      const paperStartY = 750;
+      const paperBg = this.add.rectangle(paperStartX, paperStartY, paperWidth, paperHeight, 0xFAFAFA);
       paperBg.setStrokeStyle(3, 0x1D3557);
       paperBg.setDepth(20);
 
@@ -88,7 +90,21 @@ export default class IntroScene extends Phaser.Scene {
       const paperFinalX = 640;
       const paperFinalY = 340;
 
-      const paperContent = this.add.text(260 + paperWidth / 2, 750,
+      // UN Logo - top-right corner of paper
+      // Screen width is 1280, paper width 760, so right edge is at 640 + 380 = 1020
+      // Set logo X to 980 (30px from right edge of paper)
+      const logoX = 980;
+      const logoPadding = 30;
+
+      const logoUN = this.add.image(logoX, paperStartY - paperHeight / 2 + logoPadding, 'logo_un');
+      logoUN.setOrigin(1, 0); // Anchor to top-right corner
+      logoUN.setDisplaySize(80, 80); // Scale down to fit elegantly
+      logoUN.setDepth(22);
+
+      // Logo final Y position: top of paper (paperFinalY - paperHeight/2) + 30px padding
+      const logoFinalY = paperFinalY - paperHeight / 2 + logoPadding;
+
+      const paperContent = this.add.text(paperStartX, paperStartY,
         `ORGANISATION DES NATIONS UNIES (ONU)
 ORDRE DE MISSION DE PHASE
 ---
@@ -114,13 +130,22 @@ Les stagiaires doivent retourner au Bureau des Nations Unies pour présenter et 
       ).setOrigin(0.5).setDepth(21);
 
       // Animation: To giay truot len tu duoi man hinh
+      // Paper and text tween both X and Y
       this.tweens.add({
         targets: [paperBg, paperContent],
-        x: paperFinalX,
-        y: paperFinalY,
+        x: [paperStartX, paperFinalX],
+        y: [paperStartY, paperFinalY],
         duration: 800,
         ease: 'Back.easeOut',
         onComplete: () => {
+          // Logo only tweens Y axis (X stays fixed at 980)
+          this.tweens.add({
+            targets: logoUN,
+            y: logoFinalY,
+            duration: 800,
+            ease: 'Back.easeOut'
+          });
+
           // Hien nut "Suivant" o goc duoi ben phai man hinh (ngoai vung van ban)
           const nextBtnX = 1120;
           const nextBtnY = 640;
@@ -154,7 +179,7 @@ Les stagiaires doivent retourner au Bureau des Nations Unies pour présenter et 
 
             // To giay va nut truot di va chuyen canh sang MapScene
             this.tweens.add({
-              targets: [paperBg, paperContent, nextBtnBg, nextBtnText],
+              targets: [paperBg, paperContent, logoUN, nextBtnBg, nextBtnText],
               x: 1400,
               duration: 500,
               ease: 'Power2.easeIn',

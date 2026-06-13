@@ -52,6 +52,11 @@ export default class PreloaderScene extends Phaser.Scene {
     );
 
     this.load.image(
+      'logo_un',
+      'assets/logo_un.png'
+    );
+
+    this.load.image(
       'npc_quebec_resident',
       'assets/npc_quebec_resident.jpg'
     );
@@ -68,6 +73,11 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.audio(
       'intro_voice',
       'assets/intro_voice.mp3'
+    );
+
+    this.load.audio(
+      'quebec_hint_voice',
+      'assets/quebec_hint_voice.mp3'
     );
 
     this.load.audio(

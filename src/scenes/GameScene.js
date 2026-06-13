@@ -143,9 +143,15 @@ export default class GameScene extends Phaser.Scene {
             // Zoom nhe vao NPC (KHONG co target ring)
             this.cameras.main.zoomTo(1.2, 800, 'Power2');
 
-            // Sau 1300ms -> hien Speech Bubble
+            // Sau 1300ms -> hien Speech Bubble va phat voice acting
             this.time.delayedCall(1300, () => {
               this.showQuebecDialogueBox(npc);
+              // Play voice acting synced with typewriter
+              try {
+                this.sound.play('quebec_hint_voice', { volume: 0.9 });
+              } catch (e) {
+                console.warn('Audio missing - quebec_hint_voice');
+              }
             });
           });
         });
