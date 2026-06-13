@@ -38,7 +38,7 @@ export default class IntroScene extends Phaser.Scene {
       console.warn('Audio missing - intro_voice');
     }
 
-    // Subtitle - Phu de tieng Phap o 1/3 duoi man hinh
+    // Subtitle - Sleeker subtitle bar at bottom third of screen
     const subtitleY = 580;
     const subtitleBg = this.add.rectangle(640, subtitleY, 1280, 180, 0x000000, 0.8);
     subtitleBg.setDepth(10);
@@ -48,7 +48,8 @@ export default class IntroScene extends Phaser.Scene {
       fontSize: '24px',
       color: '#ffffff',
       align: 'center',
-      wordWrap: { width: 1200 }
+      wordWrap: { width: 1200 },
+      lineSpacing: 10
     }).setOrigin(0.5).setDepth(11);
 
     // Typewriter effect cho subtitle
@@ -76,53 +77,60 @@ export default class IntroScene extends Phaser.Scene {
       subtitleText.destroy();
       subtitleBg.destroy();
 
-      // Tao to giay "Plan de travail"
-      const paperWidth = 600;
-      const paperHeight = 400;
-      const paperBg = this.add.rectangle(640, 900, paperWidth, paperHeight, 0xfffdd0);
-      paperBg.setStrokeStyle(3, 0x555555);
+      // Tao to giay "Plan de travail" - Professional paper styling with larger dimensions
+      const paperWidth = 760;
+      const paperHeight = 520;
+      const paperBg = this.add.rectangle(260 + paperWidth / 2, 750, paperWidth, paperHeight, 0xFAFAFA);
+      paperBg.setStrokeStyle(3, 0x1D3557);
       paperBg.setDepth(20);
 
-      const paperContent = this.add.text(640, 900,
-        `STATUT : Stagiaire
+      // Paper final position - centered on screen
+      const paperFinalX = 640;
+      const paperFinalY = 340;
 
-MISSION PRINCIPALE :
-Rédiger une nouvelle loi pour la protection
-de l'environnement (ODD 15)
-et des institutions pacifiques (ODD 16)
-
-OBJECTIFS SPÉCIFIQUES :
-• Voyager dans les pays de la Francophonie
-  en alerte environnementale/sociale
-• Enquêter, collecter des preuves
-  et écouter les citoyens
-• Organiser une conférence de médiation
-  pour résoudre les conflits`,
+      const paperContent = this.add.text(260 + paperWidth / 2, 750,
+        `ORGANISATION DES NATIONS UNIES (ONU)
+ORDRE DE MISSION DE PHASE
+---
+INFORMATIONS GÉNÉRALES
+* Statut de la station : Station des Nations Unies
+* Durée de la mission : Phase réglementaire
+MISSION PRINCIPALE
+Évaluer, recueillir des preuves et résoudre les crises environnementales et sociales (conformément aux objectifs ODD 15 et ODD 16) dans les pays de la Francophonie.
+OBJECTIFS SPÉCIAUX ET DE DÉPLACEMENT
+1. NUMÉRATION DU TERRAIN : Se rendre dans les pays à risque, mener des enquêtes et recueillir les avis des populations locales afin de constituer des « fiches de preuves ».
+2. MÉDIAS : Participer à des simulations de médiation et en organiser afin de résoudre les différends entre les parties concernées.
+3. PROPOSITION FINALE : Élaborer une proposition de loi relative à la protection de l'environnement et aux institutions pacifiques.
+CRITÈRES DE VALIDATION PAR ÉTAPE :
+Les stagiaires doivent retourner au Bureau des Nations Unies pour présenter et soumettre leur rapport de proposition finalisé et obtenir l'approbation formelle de leur superviseur.`,
         {
           fontFamily: 'Georgia',
-          fontSize: '18px',
-          color: '#1a1a2e',
-          align: 'center',
+          fontSize: '15px',
+          color: '#111111',
+          align: 'left',
           lineSpacing: 6,
-          wordWrap: { width: 520 }
+          wordWrap: { width: 680 }
         }
       ).setOrigin(0.5).setDepth(21);
 
       // Animation: To giay truot len tu duoi man hinh
       this.tweens.add({
         targets: [paperBg, paperContent],
-        y: 360,
+        x: paperFinalX,
+        y: paperFinalY,
         duration: 800,
         ease: 'Back.easeOut',
         onComplete: () => {
-          // Hien nut "Suivant" sau khi to giay truot len xong
-          // Tao rectangle interactive lam nut bam
-          const nextBtnBg = this.add.rectangle(640, 620, 180, 55, 0xf4d35e);
+          // Hien nut "Suivant" o goc duoi ben phai man hinh (ngoai vung van ban)
+          const nextBtnX = 1120;
+          const nextBtnY = 640;
+
+          const nextBtnBg = this.add.rectangle(nextBtnX, nextBtnY, 180, 55, 0xf4d35e);
           nextBtnBg.setStrokeStyle(2, 0xe6c22f);
           nextBtnBg.setInteractive({ useHandCursor: true });
           nextBtnBg.setDepth(25);
 
-          const nextBtnText = this.add.text(640, 620, 'Suivant ⏭', {
+          const nextBtnText = this.add.text(nextBtnX, nextBtnY, 'Suivant ⏭', {
             fontFamily: 'Arial',
             fontSize: '22px',
             color: '#1a1a2e',

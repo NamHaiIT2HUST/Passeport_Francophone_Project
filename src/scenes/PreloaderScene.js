@@ -39,6 +39,11 @@ export default class PreloaderScene extends Phaser.Scene {
       'assets/bg_add.png'
     );
 
+    this.load.image(
+      'bg_gameplay',
+      'assets/bg_gameplay.jpg'
+    );
+
     // CHARACTERS
 
     this.load.image(

@@ -55,13 +55,33 @@ export default class MapScene extends Phaser.Scene {
       ease: 'Sine.easeInOut'
     });
 
-    // Dong chu huong dan
+    // Modern tooltip for Madagascar label
+    const madagascarLabel = this.add.text(madaX, madaY + 60, 'Madagascar', {
+      fontFamily: 'Arial',
+      fontSize: '18px',
+      color: '#F4D35E',
+      backgroundColor: '#1D3557',
+      padding: { x: 12, y: 8 },
+      fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(3);
+
+    // Subtle pulse animation for the label
+    this.tweens.add({
+      targets: madagascarLabel,
+      alpha: 0.8,
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+
+    // Sleek notification banner with rounded red background
     const guideText = this.add.text(640, 60, 'Sélectionnez cette zone', {
       fontFamily: 'Arial',
       fontSize: '26px',
       color: '#ffffff',
-      backgroundColor: '#cc0000',
-      padding: { x: 20, y: 10 },
+      backgroundColor: '#E63946',
+      padding: { x: 24, y: 12 },
       fontStyle: 'bold'
     }).setOrigin(0.5).setDepth(3);
 

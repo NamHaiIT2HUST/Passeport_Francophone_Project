@@ -77,22 +77,30 @@ export default class GameScene extends Phaser.Scene {
         bgOffice.setDisplaySize(1280, 720);
         bgOffice.setDepth(0);
 
-        // Dat NPC o giua man hinh
+        // Dat NPC o giua man hinh - grounded at bottom
         const npcX = 640;
-        const npcY = 380;
+        const npcY = 680;
         const npc = this.add.image(npcX, npcY, 'npc_quebec_resident');
 
-        // Auto-scale NPC
+        // Set origin to bottom center so NPC stands on ground
+        npc.setOrigin(0.5, 1);
+
+        // Auto-scale NPC to fit screen height (~450px tall)
         if (npc.height > 0) {
-          npc.setScale(400 / npc.height);
+          npc.setScale(450 / npc.height);
         }
         npc.setDepth(1);
 
-        // Tween nhe nhang (tho)
+        // Store base scale for breathing animation
+        const baseScaleX = npc.scaleX;
+        const baseScaleY = npc.scaleY;
+
+        // Realistic breathing tween - NPC stays grounded
         this.tweens.add({
           targets: npc,
-          y: npcY - 10,
-          duration: 2000,
+          scaleX: baseScaleX * 1.01,
+          scaleY: baseScaleY * 1.02,
+          duration: 1500,
           yoyo: true,
           repeat: -1,
           ease: 'Sine.easeInOut'
@@ -135,9 +143,9 @@ export default class GameScene extends Phaser.Scene {
             // Zoom nhe vao NPC (KHONG co target ring)
             this.cameras.main.zoomTo(1.2, 800, 'Power2');
 
-            // Sau 1300ms -> hien Dialogue Box
+            // Sau 1300ms -> hien Speech Bubble
             this.time.delayedCall(1300, () => {
-              this.showQuebecDialogueBox();
+              this.showQuebecDialogueBox(npc);
             });
           });
         });
@@ -148,65 +156,83 @@ export default class GameScene extends Phaser.Scene {
   // ============================================
   // GIAI DOAN 3: HOP THOAI MANH MOI (15s - 20s)
   // ============================================
-  showQuebecDialogueBox() {
-    // Tao container co dinh voi camera (setScrollFactor(0))
-    const dialogueContainer = this.add.container(0, 0);
-    dialogueContainer.setDepth(20);
-    dialogueContainer.setScrollFactor(0);
+  showQuebecDialogueBox(npc) {
+    // Speech bubble dimensions
+    const bubbleWidth = 420;
+    const bubbleHeight = 120;
+    const cornerRadius = 16;
+    const padding = 20;
 
-    // Ve khung hoi thoai bo goc bang Graphics
+    // Calculate absolute position above NPC's head
+    const npcWorldX = npc.x;
+    const npcWorldY = npc.y;
+    const npcDisplayHeight = npc.displayHeight;
+
+    // Position: right above NPC's head
+    const bubbleX = npcWorldX - bubbleWidth / 2;
+    const bubbleY = npcWorldY - npcDisplayHeight - bubbleHeight - 20;
+
+    // Create speech bubble container with depth 100 (above everything)
+    const speechBubbleContainer = this.add.container(npcWorldX, bubbleY + bubbleHeight / 2);
+    speechBubbleContainer.setDepth(100);
+    speechBubbleContainer.setScrollFactor(1); // Stays attached to NPC in game world
+
+    // Draw speech bubble with Graphics
     const graphics = this.add.graphics();
-    const boxWidth = 1000;
-    const boxHeight = 160;
-    const boxX = (1280 - boxWidth) / 2;
-    const boxY = 720 - boxHeight - 20;
 
-    // Ve rounded rectangle
-    graphics.fillStyle(0x000000, 0.85);
-    graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 16);
-    graphics.lineStyle(3, 0xf4d35e, 1);
-    graphics.strokeRoundedRect(boxX, boxY, boxWidth, boxHeight, 16);
+    // Step 1: Draw subtle drop shadow (black, alpha 0.2, offset y+4)
+    graphics.fillStyle(0x000000, 0.2);
+    graphics.fillRoundedRect(-bubbleWidth / 2 + 4, -bubbleHeight / 2 + 4, bubbleWidth, bubbleHeight, cornerRadius);
 
-    dialogueContainer.add(graphics);
+    // Step 2: Draw white rounded rectangle (#FFFFFF)
+    graphics.fillStyle(0xFFFFFF);
+    graphics.fillRoundedRect(-bubbleWidth / 2, -bubbleHeight / 2, bubbleWidth, bubbleHeight, cornerRadius);
 
-    // Hien ten hien thi: 'Expert Local'
-    const nameTag = this.add.text(
-      boxX + 20,
-      boxY - 30,
-      'Expert Local',
-      {
-        fontFamily: 'Arial',
-        fontSize: '22px',
-        color: '#f4d35e',
-        fontStyle: 'bold',
-        backgroundColor: '#000000cc',
-        padding: { x: 12, y: 6 }
-      }
-    ).setScrollFactor(0).setDepth(21);
+    // Step 3: Draw 2px stroke of #1D3557
+    graphics.lineStyle(2, 0x1D3557, 1);
+    graphics.strokeRoundedRect(-bubbleWidth / 2, -bubbleHeight / 2, bubbleWidth, bubbleHeight, cornerRadius);
 
-    dialogueContainer.add(nameTag);
+    // Step 4: Draw small white triangle (tail) pointing down towards NPC's head
+    const tailWidth = 20;
+    const tailHeight = 15;
+    const tailX = npcWorldX - bubbleX; // Center of bubble relative to container
 
-    // Doi tuong text cho hoi thoai
+    graphics.fillStyle(0xFFFFFF);
+    graphics.fillTriangle(
+      tailX - tailWidth / 2, bubbleHeight / 2,
+      tailX + tailWidth / 2, bubbleHeight / 2,
+      tailX, bubbleHeight / 2 + tailHeight
+    );
+
+    // Stroke the tail
+    graphics.lineStyle(2, 0x1D3557, 1);
+    graphics.lineBetween(tailX - tailWidth / 2, bubbleHeight / 2, tailX, bubbleHeight / 2 + tailHeight);
+    graphics.lineBetween(tailX + tailWidth / 2, bubbleHeight / 2, tailX, bubbleHeight / 2 + tailHeight);
+
+    speechBubbleContainer.add(graphics);
+
+    // Add dialogue text with proper padding and styling
     const dialogueText = this.add.text(
-      boxX + 30,
-      boxY + 30,
+      -bubbleWidth / 2 + padding,
+      -bubbleHeight / 2 + padding,
       '',
       {
         fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#ffffff',
-        wordWrap: { width: boxWidth - 60 }
+        fontSize: '22px',
+        color: '#111111',
+        fontStyle: 'bold',
+        lineSpacing: 8,
+        wordWrap: { width: bubbleWidth - padding * 2 }
       }
-    ).setScrollFactor(0).setDepth(21);
-
-    dialogueContainer.add(dialogueText);
+    );
+    speechBubbleContainer.add(dialogueText);
 
     // Typewriter effect: "Charon habite à gauche de l'église."
     const fullText = "Charon habite à gauche de l'église.";
     let charIndex = 0;
 
     const typewriterTimer = this.time.addEvent({
-      delay: 35,
+      delay: 40,
       callback: () => {
         if (charIndex < fullText.length) {
           dialogueText.setText(fullText.substring(0, charIndex + 1));
@@ -218,19 +244,18 @@ export default class GameScene extends Phaser.Scene {
       repeat: fullText.length - 1
     });
 
-    // Click de complete typewriter hoac close dialogue
-    dialogueContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, 1280, 720), Phaser.Geom.Rectangle.Contains);
-    dialogueContainer.on('pointerdown', () => {
+    // Click to complete typewriter or close speech bubble
+    this.input.on('pointerdown', () => {
       if (charIndex < fullText.length) {
         dialogueText.setText(fullText);
         typewriterTimer.remove();
       } else {
         this.tweens.add({
-          targets: dialogueContainer,
+          targets: speechBubbleContainer,
           alpha: 0,
           duration: 300,
           onComplete: () => {
-            dialogueContainer.destroy();
+            speechBubbleContainer.destroy();
           }
         });
       }

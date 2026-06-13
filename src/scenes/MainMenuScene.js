@@ -7,31 +7,19 @@ export default class MainMenuScene extends Phaser.Scene {
 
   create() {
 
-    this.cameras.main.setBackgroundColor('#1d3557');
+    // Add background image instead of solid color
+    const bg = this.add.image(640, 360, 'bg_gameplay');
+    const scaleX = 1280 / bg.width;
+    const scaleY = 720 / bg.height;
+    const scale = Math.max(scaleX, scaleY);
+    bg.setScale(scale);
+    bg.setDepth(0);
 
-    this.add.text(
-      640,
-      250,
-      'PASSEPORT FRANCOPHONE',
-      {
-        fontFamily: 'Arial',
-        fontSize: '56px',
-        color: '#ffffff',
-        fontStyle: 'bold'
-      }
-    ).setOrigin(0.5);
+    // Add dark overlay (0x000000, alpha 0.5) for text readability
+    const overlay = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0.5);
+    overlay.setDepth(1);
 
-    this.add.text(
-      640,
-      320,
-      'Mission Médiation',
-      {
-        fontFamily: 'Arial',
-        fontSize: '32px',
-        color: '#f4d35e'
-      }
-    ).setOrigin(0.5);
-
+    // Modern UI Button with rounded corners
     const startBtn = this.add.text(
       640,
       450,
@@ -42,13 +30,15 @@ export default class MainMenuScene extends Phaser.Scene {
         color: '#1d3557',
         backgroundColor: '#f4d35e',
         padding: {
-          x: 20,
-          y: 12
-        }
+          x: 30,
+          y: 15
+        },
+        fontStyle: 'bold'
       }
     )
       .setOrigin(0.5)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ useHandCursor: true })
+      .setDepth(10);
 
     this.tweens.add({
       targets: startBtn,
